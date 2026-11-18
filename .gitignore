@@ -1,0 +1,10 @@
+node_modules/
+runtime/
+importer/cache/
+data/dndbuilder.db
+data/dndbuilder.db-*
+data/backups/
+data/import-status.json
+data/import-report.md
+.claude/
+DnD-Builder/

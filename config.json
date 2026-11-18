@@ -1,0 +1,9 @@
+{
+  "port": 4810,
+  "dbPath": "data/dndbuilder.db",
+  "import": {
+    "baseUrl": "https://dnd5e.wikidot.com",
+    "requestsPerSecond": 1,
+    "cacheDir": "importer/cache"
+  }
+}

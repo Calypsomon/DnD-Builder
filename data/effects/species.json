@@ -1,0 +1,67 @@
+{
+  "_comment": "PHB species/subspecies features not already covered by the parser.",
+
+  "subspecies:elf:high/cantrip": {
+    "choices": [
+      { "id": "subspecies:elf:high/cantrip:choice", "label": "Wizard Cantrip", "level": 1, "count": 1,
+        "from": { "kind": "spells", "lists": ["class:wizard"], "maxLevel": 0 } }
+    ]
+  },
+  "species:half-elf/half-elf-versatility": {
+    "choices": [
+      { "id": "species:half-elf/half-elf-versatility:skills", "label": "Skill Versatility", "level": 1, "count": 2, "from": { "kind": "skills" },
+        "grants": [{ "type": "proficiency", "kind": "skill", "ids": ["$id"] }] }
+    ]
+  },
+  "species:dragonborn/draconic-ancestry": {
+    "choices": [
+      { "id": "species:dragonborn/draconic-ancestry:damage", "label": "Draconic Ancestry (damage type: black/copper acid, blue/bronze lightning, brass/gold/red fire, green poison, silver/white cold)", "level": 1, "count": 1,
+        "from": { "kind": "list", "ids": ["acid", "cold", "fire", "lightning", "poison"] },
+        "grants": [{ "type": "damageDefense", "kind": "resistance", "damageTypes": ["$id"] }] }
+    ]
+  },
+  "species:gnome/gnome-cunning": {
+    "effects": [{ "type": "note", "text": "Advantage on Intelligence, Wisdom and Charisma saving throws against magic." }]
+  },
+  "species:elf/fey-ancestry": {
+    "effects": [{ "type": "note", "text": "Advantage on saving throws against being charmed; magic can't put you to sleep." }]
+  },
+  "species:half-elf/fey-ancestry": {
+    "effects": [{ "type": "note", "text": "Advantage on saving throws against being charmed; magic can't put you to sleep." }]
+  },
+  "species:dwarf/stonecunning": {
+    "effects": [{ "type": "note", "text": "Double proficiency bonus on Intelligence (History) checks related to the origin of stonework." }]
+  },
+  "species:halfling/lucky": {
+    "effects": [{ "type": "note", "text": "Reroll a 1 on an attack roll, ability check or saving throw." }]
+  },
+  "species:halfling/brave": {
+    "effects": [{ "type": "note", "text": "Advantage on saving throws against being frightened." }]
+  },
+  "species:half-orc/relentless-endurance": {
+    "effects": [
+      { "type": "resource", "id": "relentless-endurance", "name": "Relentless Endurance", "max": 1, "recharge": "long" },
+      { "type": "note", "text": "When reduced to 0 HP but not killed outright, drop to 1 HP instead." }
+    ]
+  },
+  "species:half-orc/savage-attacks": {
+    "effects": [{ "type": "note", "text": "On a melee weapon critical hit, roll one extra weapon damage die." }]
+  },
+  "subspecies:gnome:forest/natural-illusionist": {
+    "effects": [{ "type": "grantSpell", "spellId": "spell:minor-illusion", "alwaysPrepared": true, "ability": "int" }]
+  },
+  "subspecies:elf:drow/drow-magic": {
+    "effects": [
+      { "type": "grantSpell", "spellId": "spell:dancing-lights", "alwaysPrepared": true, "ability": "cha" },
+      { "type": "grantSpell", "spellId": "spell:faerie-fire", "alwaysPrepared": true, "ability": "cha", "minLevel": 3, "uses": { "max": 1, "recharge": "long" } },
+      { "type": "grantSpell", "spellId": "spell:darkness", "alwaysPrepared": true, "ability": "cha", "minLevel": 5, "uses": { "max": 1, "recharge": "long" } }
+    ]
+  },
+  "subspecies:tiefling:bloodline-of-asmodeus/infernal-legacy": {
+    "effects": [
+      { "type": "grantSpell", "spellId": "spell:thaumaturgy", "alwaysPrepared": true, "ability": "cha" },
+      { "type": "grantSpell", "spellId": "spell:hellish-rebuke", "alwaysPrepared": true, "ability": "cha", "minLevel": 3, "uses": { "max": 1, "recharge": "long" } },
+      { "type": "grantSpell", "spellId": "spell:darkness", "alwaysPrepared": true, "ability": "cha", "minLevel": 5, "uses": { "max": 1, "recharge": "long" } }
+    ]
+  }
+}

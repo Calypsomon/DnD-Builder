@@ -1,0 +1,78 @@
+{
+  "_comment": "Hand-maintained PHB feat effects. Parser already produced ASI effects/choices; these are appended.",
+
+  "feat:alert": { "effects": [{ "type": "bonus", "target": "initiative", "value": 5 }] },
+  "feat:tough": { "effects": [{ "type": "hpPerLevel", "value": 2 }] },
+  "feat:mobile": { "effects": [{ "type": "speed", "mode": "walk", "op": "add", "value": 10 }] },
+  "feat:observant": {
+    "effects": [
+      { "type": "bonus", "target": "passive.perception", "value": 5 },
+      { "type": "bonus", "target": "passive.investigation", "value": 5 }
+    ]
+  },
+  "feat:lucky": {
+    "effects": [{ "type": "resource", "id": "luck-points", "name": "Luck Points", "max": 3, "recharge": "long" }]
+  },
+  "feat:heavily-armored": { "effects": [{ "type": "proficiency", "kind": "armor", "ids": ["heavy"] }] },
+  "feat:moderately-armored": { "effects": [{ "type": "proficiency", "kind": "armor", "ids": ["medium", "shields"] }] },
+  "feat:lightly-armored": { "effects": [{ "type": "proficiency", "kind": "armor", "ids": ["light"] }] },
+  "feat:weapon-master": {
+    "effects": [{ "type": "note", "text": "Gain proficiency with four simple or martial weapons of your choice (add them manually via a custom bonus)." }]
+  },
+  "feat:linguist": {
+    "choices": [
+      { "id": "feat:linguist:languages", "label": "Languages", "level": 1, "count": 3, "from": { "kind": "languages" },
+        "grants": [{ "type": "proficiency", "kind": "language", "ids": ["$id"] }] }
+    ],
+    "effects": [{ "type": "note", "text": "You can create written ciphers (DC = INT score + proficiency bonus to decipher)." }]
+  },
+  "feat:skilled": {
+    "choices": [
+      { "id": "feat:skilled:skills", "label": "Skill Proficiencies", "level": 1, "count": 3, "from": { "kind": "skills" },
+        "grants": [{ "type": "proficiency", "kind": "skill", "ids": ["$id"] }] }
+    ],
+    "effects": [{ "type": "note", "text": "You may choose tool proficiencies instead of skills; add tools manually via a custom bonus." }]
+  },
+  "feat:war-caster": {
+    "effects": [{ "type": "note", "text": "Advantage on Constitution saves to maintain concentration; somatic components with full hands; opportunity attacks can be spells." }]
+  },
+  "feat:sentinel": {
+    "effects": [{ "type": "note", "text": "Opportunity attacks reduce speed to 0; ignore Disengage; reaction attack when an enemy attacks an ally." }]
+  },
+  "feat:great-weapon-master": {
+    "effects": [{ "type": "note", "text": "Bonus attack on crit/kill with melee; before attacking with a heavy weapon you can take -5 to hit for +10 damage." }]
+  },
+  "feat:sharpshooter": {
+    "effects": [{ "type": "note", "text": "No disadvantage at long range; ignore half/three-quarters cover; before attacking with a ranged weapon you can take -5 to hit for +10 damage." }]
+  },
+  "feat:polearm-master": {
+    "effects": [{ "type": "note", "text": "Bonus action butt-end attack (d4) with glaive/halberd/quarterstaff/pike; opportunity attack when enemies enter your reach." }]
+  },
+  "feat:crossbow-expert": {
+    "effects": [{ "type": "note", "text": "Ignore loading; no disadvantage on ranged attacks within 5 ft; bonus action hand crossbow attack." }]
+  },
+  "feat:dual-wielder": {
+    "effects": [{ "type": "note", "text": "+1 AC while wielding a separate melee weapon in each hand; two-weapon fighting with non-light one-handed weapons; draw/stow two weapons at once." }]
+  },
+  "feat:durable": {
+    "effects": [{ "type": "note", "text": "When you roll a Hit Die to regain HP, the minimum you regain is twice your Constitution modifier (minimum 2)." }]
+  },
+  "feat:magic-initiate": {
+    "choices": [
+      { "id": "feat:magic-initiate:cantrips", "label": "Magic Initiate Cantrips (from one class list)", "level": 1, "count": 2,
+        "from": { "kind": "spells", "maxLevel": 0 } },
+      { "id": "feat:magic-initiate:spell", "label": "Magic Initiate 1st-level Spell (same class list)", "level": 1, "count": 1,
+        "from": { "kind": "spells", "minLevel": 1, "maxLevel": 1 } }
+    ],
+    "effects": [{ "type": "note", "text": "Choose bard, cleric, druid, sorcerer, warlock or wizard; pick both cantrips and the 1st-level spell from that class's list. The 1st-level spell can be cast once per long rest." }]
+  },
+  "feat:ritual-caster": {
+    "effects": [{ "type": "note", "text": "You can cast spells from your ritual book as rituals (see feat text for class choice and prerequisites)." }]
+  },
+  "feat:medium-armor-master": {
+    "effects": [{ "type": "note", "text": "Wearing medium armor does not impose disadvantage on Stealth; the maximum DEX bonus to AC from medium armor is 3 instead of 2." }]
+  },
+  "feat:defensive-duelist": {
+    "effects": [{ "type": "note", "text": "Reaction while wielding a finesse weapon: add your proficiency bonus to your AC against one melee attack." }]
+  }
+}

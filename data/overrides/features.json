@@ -1,0 +1,22 @@
+{
+  "_comment": "Feature levels the parser could not read from the text. Checked by hand against the wiki pages.",
+  "subclass:fighter:arcane-archer-ua/arcane-shots": { "data": { "level": 3 } },
+  "subclass:bard:mage-of-lorehold-ua/using-this-subclass": { "data": { "level": 3 } },
+  "subclass:bard:mage-of-silverquill-ua/using-this-subclass": { "data": { "level": 3 } },
+  "subclass:ranger:fey-wanderer/fey-wanderer-magic": { "data": { "level": 3 } },
+  "subclass:ranger:fey-wanderer-ua/feywild-gifts": { "data": { "level": 3 } },
+  "subclass:ranger:fey-wanderer-ua/fey-wanderer-magic": { "data": { "level": 3 } },
+  "subclass:ranger:monster-slayer-ua/slayers-mysticism": { "data": { "level": 3 } },
+  "subclass:sorcerer:clockwork-soul/clockwork-magic": { "data": { "level": 1 } },
+  "subclass:sorcerer:divine-soul/divine-magic": { "data": { "level": 1 } },
+  "subclass:sorcerer:lunar-sorcery/lunar-embodiment": { "data": { "level": 1 } },
+  "subclass:sorcerer:shadow-magic/shadow-sorcerer-quirks": { "data": { "level": 1 } },
+  "subclass:sorcerer:storm-sorcery/wind-speaker": { "data": { "level": 1 } },
+  "subclass:sorcerer:lunar-magic-ua/lunar-embodiment": { "data": { "level": 1 } },
+  "subclass:sorcerer:clockwork-soul-ua/clockwork-magic": { "data": { "level": 1 } },
+  "subclass:sorcerer:favored-soul-revisited-ua/divine-magic": { "data": { "level": 1 } },
+  "subclass:sorcerer:psionic-soul-ua/psionic-origin": { "data": { "level": 1 } },
+  "subclass:sorcerer:stone-sorcery-ua/metal-magic": { "data": { "level": 1 } },
+  "subclass:warlock:lurker-in-the-deep-ua/scion-of-the-deep": { "data": { "level": 1 } },
+  "subclass:wizard:theurgy-ua/channel-arcana-divine-arcana": { "data": { "level": 2 } }
+}

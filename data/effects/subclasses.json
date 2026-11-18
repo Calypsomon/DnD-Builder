@@ -1,0 +1,139 @@
+{
+  "_comment": "Hand-maintained subclass feature effects (PHB). Domain/oath/circle spell lists are already imported in subclass data.",
+
+  "subclass:cleric:knowledge/blessings-of-knowledge": {
+    "choices": [
+      { "id": "subclass:cleric:knowledge/blessings-of-knowledge:languages", "label": "Blessings of Knowledge: Languages", "level": 1, "count": 2, "from": { "kind": "languages" },
+        "grants": [{ "type": "proficiency", "kind": "language", "ids": ["$id"] }] },
+      { "id": "subclass:cleric:knowledge/blessings-of-knowledge:skills", "label": "Blessings of Knowledge: Skills (double proficiency)", "level": 1, "count": 2,
+        "from": { "kind": "skills", "ids": ["arcana", "history", "nature", "religion"] },
+        "grants": [{ "type": "proficiency", "kind": "skill", "ids": ["$id"] }, { "type": "expertise", "skills": ["$id"] }] }
+    ]
+  },
+  "subclass:cleric:life/bonus-proficiency": {
+    "effects": [{ "type": "proficiency", "kind": "armor", "ids": ["heavy"] }]
+  },
+  "subclass:cleric:light/bonus-cantrip": {
+    "effects": [{ "type": "grantSpell", "spellId": "spell:light", "alwaysPrepared": true }]
+  },
+  "subclass:cleric:nature/acolyte-of-nature": {
+    "choices": [
+      { "id": "subclass:cleric:nature/acolyte-of-nature:cantrip", "label": "Druid Cantrip", "level": 1, "count": 1,
+        "from": { "kind": "spells", "lists": ["class:druid"], "maxLevel": 0 } },
+      { "id": "subclass:cleric:nature/acolyte-of-nature:skill", "label": "Acolyte of Nature: Skill", "level": 1, "count": 1,
+        "from": { "kind": "skills", "ids": ["animal-handling", "nature", "survival"] },
+        "grants": [{ "type": "proficiency", "kind": "skill", "ids": ["$id"] }] }
+    ]
+  },
+  "subclass:cleric:nature/bonus-proficiency": {
+    "effects": [{ "type": "proficiency", "kind": "armor", "ids": ["heavy"] }]
+  },
+  "subclass:cleric:tempest/bonus-proficiencies": {
+    "effects": [
+      { "type": "proficiency", "kind": "armor", "ids": ["heavy"] },
+      { "type": "proficiency", "kind": "weapon", "ids": ["martial"] }
+    ]
+  },
+  "subclass:cleric:war/bonus-proficiency": {
+    "effects": [
+      { "type": "proficiency", "kind": "armor", "ids": ["heavy"] },
+      { "type": "proficiency", "kind": "weapon", "ids": ["martial"] }
+    ]
+  },
+
+  "subclass:druid:land/bonus-cantrip": {
+    "choices": [
+      { "id": "subclass:druid:land/bonus-cantrip:cantrip", "label": "Druid Cantrip", "level": 2, "count": 1,
+        "from": { "kind": "spells", "lists": ["class:druid"], "maxLevel": 0 } }
+    ]
+  },
+
+  "subclass:sorcerer:draconic-bloodline/draconic-resilience": {
+    "effects": [
+      { "type": "hpPerLevel", "value": 1 },
+      { "type": "acFormula", "name": "Draconic Resilience", "formula": "13 + dex", "allowsShield": true, "when": "noArmor" }
+    ]
+  },
+
+  "subclass:fighter:champion/improved-critical": {
+    "effects": [{ "type": "note", "text": "Weapon attacks score a critical hit on a roll of 19 or 20." }]
+  },
+  "subclass:fighter:champion/remarkable-athlete": {
+    "effects": [{ "type": "note", "text": "Add half your proficiency bonus (rounded up) to Strength, Dexterity or Constitution checks that do not already use it; running long jump distance increases by your Strength modifier in feet." }]
+  },
+  "subclass:fighter:champion/additional-fighting-style": {
+    "choices": [
+      { "id": "subclass:fighter:champion/additional-fighting-style:choice", "label": "Additional Fighting Style", "level": 10, "count": 1,
+        "from": { "kind": "classOptions", "group": "fighting-style", "classId": "class:fighter" } }
+    ]
+  },
+  "subclass:fighter:champion/superior-critical": {
+    "effects": [{ "type": "note", "text": "Weapon attacks score a critical hit on a roll of 18-20." }]
+  },
+  "subclass:fighter:champion/survivor": {
+    "effects": [{ "type": "note", "text": "Regain 5 + Constitution modifier HP at the start of each of your turns if at or below half HP (and above 0)." }]
+  },
+
+  "subclass:fighter:battle-master/combat-superiority": {
+    "effects": [
+      { "type": "resource", "id": "superiority-dice", "name": "Superiority Dice", "max": "4 + min(1, floor(level / 7)) + floor(level / 15)", "recharge": "short", "die": "8 + 2 * min(1, floor(level / 10)) + 2 * floor(level / 18)" },
+      { "type": "note", "text": "Superiority die: d8, d10 at level 10, d12 at level 18. Maneuver save DC = 8 + proficiency bonus + Strength or Dexterity modifier." }
+    ]
+  },
+
+  "subclass:bard:lore/bonus-proficiencies": {
+    "choices": [
+      { "id": "subclass:bard:lore/bonus-proficiencies:skills", "label": "Bonus Proficiencies", "level": 3, "count": 3, "from": { "kind": "skills" },
+        "grants": [{ "type": "proficiency", "kind": "skill", "ids": ["$id"] }] }
+    ]
+  },
+  "subclass:bard:lore/additional-magical-secrets": {
+    "choices": [
+      { "id": "subclass:bard:lore/additional-magical-secrets:choice", "label": "Additional Magical Secrets", "level": 6, "count": 2, "from": { "kind": "spells" } }
+    ]
+  },
+  "subclass:bard:valor/bonus-proficiencies": {
+    "effects": [
+      { "type": "proficiency", "kind": "armor", "ids": ["medium", "shields"] },
+      { "type": "proficiency", "kind": "weapon", "ids": ["martial"] }
+    ]
+  },
+
+  "subclass:monk:open-hand/wholeness-of-body": {
+    "effects": [
+      { "type": "resource", "id": "wholeness-of-body", "name": "Wholeness of Body", "max": 1, "recharge": "long" }
+    ]
+  },
+
+  "subclass:paladin:ancients/channel-divinity": {
+    "effects": [{ "type": "resource", "id": "channel-divinity", "name": "Channel Divinity", "max": 1, "recharge": "short" }]
+  },
+  "subclass:paladin:devotion/channel-divinity": {
+    "effects": [{ "type": "resource", "id": "channel-divinity", "name": "Channel Divinity", "max": 1, "recharge": "short" }]
+  },
+  "subclass:paladin:vengeance/channel-divinity": {
+    "effects": [{ "type": "resource", "id": "channel-divinity", "name": "Channel Divinity", "max": 1, "recharge": "short" }]
+  },
+
+  "subclass:rogue:assassin/bonus-proficiencies": {
+    "effects": [{ "type": "proficiency", "kind": "tool", "ids": ["disguise-kit", "poisoners-kit"] }]
+  },
+  "subclass:rogue:arcane-trickster/mage-hand-legerdemain": {
+    "effects": [{ "type": "grantSpell", "spellId": "spell:mage-hand", "alwaysPrepared": true }]
+  },
+
+  "subclass:warlock:fiend/dark-ones-own-luck": {
+    "effects": [
+      { "type": "resource", "id": "dark-ones-own-luck", "name": "Dark One's Own Luck", "max": "max(1, cha)", "recharge": "long" }
+    ]
+  },
+
+  "subclass:wizard:divination/portent": {
+    "effects": [
+      { "type": "resource", "id": "portent", "name": "Portent Dice", "max": "2 + floor(level / 14)", "recharge": "long" }
+    ]
+  },
+  "subclass:wizard:illusion/improved-minor-illusion": {
+    "effects": [{ "type": "grantSpell", "spellId": "spell:minor-illusion", "alwaysPrepared": true }]
+  }
+}

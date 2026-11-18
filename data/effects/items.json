@@ -1,0 +1,7 @@
+{
+  "_comment": "Magic items whose simple effects the parser did not produce. Ring/Cloak of Protection, Gauntlets of Ogre Power, Amulet of Health and Headband of Intellect are already parsed.",
+
+  "magic:bracers-of-defense": {
+    "effects": [{ "type": "bonus", "target": "ac", "value": 2, "when": "unarmored" }]
+  }
+}

@@ -1,0 +1,174 @@
+{
+  "_comment": "Hand-maintained class feature effects (PHB + Artificer basics). Keys are feature ids.",
+
+  "class:barbarian/rage": {
+    "effects": [
+      { "type": "resource", "id": "rage", "name": "Rage", "max": "table:Rages", "recharge": "long", "die": "table:Rage Damage" },
+      { "type": "note", "text": "While raging: bonus to melee damage with Strength (shown next to Rage), advantage on Strength checks and saves, resistance to bludgeoning, piercing and slashing damage." }
+    ]
+  },
+  "class:barbarian/unarmored-defense": {
+    "effects": [
+      { "type": "acFormula", "name": "Unarmored Defense", "formula": "10 + dex + con", "allowsShield": true, "when": "noArmor" }
+    ]
+  },
+  "class:barbarian/fast-movement": {
+    "effects": [
+      { "type": "speed", "mode": "walk", "op": "add", "value": 10, "when": "noHeavyArmor" }
+    ]
+  },
+  "class:barbarian/brutal-critical": {
+    "effects": [
+      { "type": "note", "text": "Roll extra weapon damage dice on a critical hit with a melee attack: 1 extra die (9th), 2 (13th), 3 (17th)." }
+    ]
+  },
+  "class:barbarian/relentless-rage": {
+    "effects": [
+      { "type": "note", "text": "When reduced to 0 HP while raging, make a DC 10 Constitution save to drop to 1 HP instead; DC increases by 5 each time until a short or long rest." }
+    ]
+  },
+  "class:barbarian/primal-champion": {
+    "effects": [
+      { "type": "abilityIncrease", "ability": "str", "value": 4, "max": 24 },
+      { "type": "abilityIncrease", "ability": "con", "value": 4, "max": 24 }
+    ]
+  },
+
+  "class:bard/bardic-inspiration": {
+    "effects": [
+      { "type": "resource", "id": "bardic-inspiration", "name": "Bardic Inspiration", "max": "max(1, cha)", "recharge": "long", "shortRestFromLevel": 5, "die": "min(12, 6 + 2 * floor(level / 5))" },
+      { "type": "note", "text": "Bardic Inspiration die: d6, d8 at level 5, d10 at level 10, d12 at level 15." }
+    ]
+  },
+  "class:bard/jack-of-all-trades": {
+    "effects": [{ "type": "halfProficiency", "scope": "abilityChecks" }]
+  },
+  "class:bard/font-of-inspiration": {
+    "effects": [
+      { "type": "note", "text": "Bardic Inspiration uses recharge on a short or long rest." }
+    ]
+  },
+  "class:bard/magical-secrets": {
+    "choices": [
+      { "id": "class:bard/magical-secrets:choice-10", "label": "Magical Secrets", "level": 10, "count": 2, "from": { "kind": "spells" } },
+      { "id": "class:bard/magical-secrets:choice-14", "label": "Magical Secrets", "level": 14, "count": 2, "from": { "kind": "spells" } },
+      { "id": "class:bard/magical-secrets:choice-18", "label": "Magical Secrets", "level": 18, "count": 2, "from": { "kind": "spells" } }
+    ]
+  },
+
+  "class:cleric/channel-divinity": {
+    "effects": [
+      { "type": "resource", "id": "channel-divinity", "name": "Channel Divinity", "max": "1 + min(1, floor(level / 6)) + floor(level / 18)", "recharge": "short" }
+    ]
+  },
+
+  "class:druid/wild-shape": {
+    "effects": [
+      { "type": "resource", "id": "wild-shape", "name": "Wild Shape", "max": 2, "recharge": "short" }
+    ]
+  },
+
+  "class:fighter/second-wind": {
+    "effects": [
+      { "type": "resource", "id": "second-wind", "name": "Second Wind", "max": 1, "recharge": "short" }
+    ]
+  },
+  "class:fighter/action-surge": {
+    "effects": [
+      { "type": "resource", "id": "action-surge", "name": "Action Surge", "max": "1 + floor(level / 17)", "recharge": "short" }
+    ]
+  },
+  "class:fighter/indomitable": {
+    "effects": [
+      { "type": "resource", "id": "indomitable", "name": "Indomitable", "max": "1 + floor(level / 13) + floor(level / 17)", "recharge": "long" }
+    ]
+  },
+
+  "class:monk/martial-arts": {
+    "effects": [
+      { "type": "attackOption", "name": "Unarmed Strike", "ability": "best", "damage": "table:Martial Arts", "damageType": "bludgeoning" }
+    ]
+  },
+  "class:monk/ki": {
+    "effects": [
+      { "type": "resource", "id": "ki", "name": "Ki Points", "max": "table:Ki Points", "recharge": "short" }
+    ]
+  },
+  "class:monk/unarmored-defense": {
+    "effects": [
+      { "type": "acFormula", "name": "Unarmored Defense", "formula": "10 + dex + wis", "allowsShield": false, "when": "unarmored" }
+    ]
+  },
+  "class:monk/unarmored-movement": {
+    "effects": [
+      { "type": "bonus", "target": "speed.walk", "value": "table:Unarmored Movement", "when": "unarmored" }
+    ]
+  },
+  "class:monk/diamond-soul": {
+    "effects": [
+      { "type": "proficiency", "kind": "save", "ids": ["str", "dex", "con", "int", "wis", "cha"] }
+    ]
+  },
+
+  "class:paladin/divine-sense": {
+    "effects": [
+      { "type": "resource", "id": "divine-sense", "name": "Divine Sense", "max": "1 + cha", "recharge": "long" }
+    ]
+  },
+  "class:paladin/lay-on-hands": {
+    "effects": [
+      { "type": "resource", "id": "lay-on-hands", "name": "Lay on Hands (HP pool)", "max": "5 * level", "recharge": "long" }
+    ]
+  },
+  "class:paladin/aura-of-protection": {
+    "effects": [
+      { "type": "bonus", "target": "save.all", "value": "max(1, cha)" }
+    ]
+  },
+  "class:paladin/cleansing-touch": {
+    "effects": [
+      { "type": "resource", "id": "cleansing-touch", "name": "Cleansing Touch", "max": "max(1, cha)", "recharge": "long" }
+    ]
+  },
+
+  "class:rogue/sneak-attack": {
+    "effects": [
+      { "type": "note", "text": "Sneak Attack damage per class table (Sneak Attack column), once per turn." }
+    ]
+  },
+  "class:rogue/reliable-talent": {
+    "effects": [
+      { "type": "note", "text": "Any ability check that uses a skill or tool you are proficient with: treat a d20 roll of 9 or lower as a 10." }
+    ]
+  },
+  "class:rogue/blindsense": {
+    "effects": [{ "type": "sense", "sense": "blindsight", "range": 10 }]
+  },
+  "class:rogue/slippery-mind": {
+    "effects": [{ "type": "proficiency", "kind": "save", "ids": ["wis"] }]
+  },
+  "class:rogue/stroke-of-luck": {
+    "effects": [
+      { "type": "resource", "id": "stroke-of-luck", "name": "Stroke of Luck", "max": 1, "recharge": "short" }
+    ]
+  },
+
+  "class:sorcerer/font-of-magic": {
+    "effects": [
+      { "type": "resource", "id": "sorcery-points", "name": "Sorcery Points", "max": "table:Sorcery Points", "recharge": "long" }
+    ]
+  },
+
+  "class:wizard/arcane-recovery": {
+    "effects": [
+      { "type": "resource", "id": "arcane-recovery", "name": "Arcane Recovery", "max": 1, "recharge": "long" },
+      { "type": "note", "text": "Arcane Recovery: recover spell slots with a combined level up to half your wizard level (rounded up), none of 6th level or higher." }
+    ]
+  },
+
+  "class:artificer/flash-of-genius": {
+    "effects": [
+      { "type": "resource", "id": "flash-of-genius", "name": "Flash of Genius", "max": "max(1, int)", "recharge": "long" }
+    ]
+  }
+}

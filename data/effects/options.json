@@ -1,0 +1,338 @@
+{
+  "_comment": "Fighting styles and eldritch invocations with mechanical effects.",
+  "option:fighting-style:defense": {
+    "effects": [
+      {
+        "type": "bonus",
+        "target": "ac",
+        "value": 1,
+        "when": "wearingArmor"
+      }
+    ]
+  },
+  "option:fighting-style:archery": {
+    "effects": [
+      {
+        "type": "bonus",
+        "target": "attack.ranged",
+        "value": 2,
+        "when": "rangedWeapon"
+      }
+    ]
+  },
+  "option:fighting-style:dueling": {
+    "effects": [
+      {
+        "type": "bonus",
+        "target": "damage.melee",
+        "value": 2,
+        "when": "oneHandedMeleeOnly"
+      }
+    ]
+  },
+  "option:fighting-style:great-weapon-fighting": {
+    "effects": [
+      {
+        "type": "note",
+        "text": "Reroll 1s and 2s on damage dice with two-handed or versatile (two-handed) melee weapons."
+      }
+    ]
+  },
+  "option:fighting-style:protection": {
+    "effects": [
+      {
+        "type": "note",
+        "text": "While wielding a shield, use your reaction to impose disadvantage on an attack against an adjacent ally."
+      }
+    ]
+  },
+  "option:fighting-style:two-weapon-fighting": {
+    "effects": [
+      {
+        "type": "note",
+        "text": "Add your ability modifier to the damage of the off-hand attack when two-weapon fighting."
+      }
+    ]
+  },
+  "option:fighting-style:blessed-warrior": {
+    "choices": [
+      {
+        "id": "option:fighting-style:blessed-warrior:cantrips",
+        "label": "Blessed Warrior Cantrips (cleric)",
+        "level": 1,
+        "count": 2,
+        "from": {
+          "kind": "spells",
+          "lists": [
+            "class:cleric"
+          ],
+          "maxLevel": 0
+        }
+      }
+    ]
+  },
+  "option:fighting-style:druidic-warrior": {
+    "choices": [
+      {
+        "id": "option:fighting-style:druidic-warrior:cantrips",
+        "label": "Druidic Warrior Cantrips (druid)",
+        "level": 1,
+        "count": 2,
+        "from": {
+          "kind": "spells",
+          "lists": [
+            "class:druid"
+          ],
+          "maxLevel": 0
+        }
+      }
+    ]
+  },
+  "option:invocation:agonizing-blast": {
+    "effects": [
+      {
+        "type": "note",
+        "text": "Add your Charisma modifier to the damage of eldritch blast."
+      }
+    ]
+  },
+  "option:invocation:armor-of-shadows": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:mage-armor",
+        "alwaysPrepared": true,
+        "ability": "cha"
+      }
+    ]
+  },
+  "option:invocation:beast-speech": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:speak-with-animals",
+        "alwaysPrepared": true,
+        "ability": "cha"
+      }
+    ]
+  },
+  "option:invocation:eldritch-sight": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:detect-magic",
+        "alwaysPrepared": true,
+        "ability": "cha"
+      }
+    ]
+  },
+  "option:invocation:fiendish-vigor": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:false-life",
+        "alwaysPrepared": true,
+        "ability": "cha"
+      }
+    ]
+  },
+  "option:invocation:mask-of-many-faces": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:disguise-self",
+        "alwaysPrepared": true,
+        "ability": "cha"
+      }
+    ]
+  },
+  "option:invocation:misty-visions": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:silent-image",
+        "alwaysPrepared": true,
+        "ability": "cha"
+      }
+    ]
+  },
+  "option:invocation:ascendant-step": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:levitate",
+        "alwaysPrepared": true,
+        "ability": "cha"
+      }
+    ]
+  },
+  "option:invocation:otherworldly-leap": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:jump",
+        "alwaysPrepared": true,
+        "ability": "cha"
+      }
+    ]
+  },
+  "option:invocation:master-of-myriad-forms": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:alter-self",
+        "alwaysPrepared": true,
+        "ability": "cha"
+      }
+    ]
+  },
+  "option:invocation:visions-of-distant-realms": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:arcane-eye",
+        "alwaysPrepared": true,
+        "ability": "cha"
+      }
+    ]
+  },
+  "option:invocation:whispers-of-the-grave": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:speak-with-dead",
+        "alwaysPrepared": true,
+        "ability": "cha"
+      }
+    ]
+  },
+  "option:invocation:bewitching-whispers": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:compulsion",
+        "alwaysPrepared": true,
+        "ability": "cha",
+        "uses": {
+          "max": 1,
+          "recharge": "long"
+        }
+      }
+    ]
+  },
+  "option:invocation:dreadful-word": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:confusion",
+        "alwaysPrepared": true,
+        "ability": "cha",
+        "uses": {
+          "max": 1,
+          "recharge": "long"
+        }
+      }
+    ]
+  },
+  "option:invocation:sign-of-ill-omen": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:bestow-curse",
+        "alwaysPrepared": true,
+        "ability": "cha",
+        "uses": {
+          "max": 1,
+          "recharge": "long"
+        }
+      }
+    ]
+  },
+  "option:invocation:mire-the-mind": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:slow",
+        "alwaysPrepared": true,
+        "ability": "cha",
+        "uses": {
+          "max": 1,
+          "recharge": "long"
+        }
+      }
+    ]
+  },
+  "option:invocation:thief-of-five-fates": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:bane",
+        "alwaysPrepared": true,
+        "ability": "cha",
+        "uses": {
+          "max": 1,
+          "recharge": "long"
+        }
+      }
+    ]
+  },
+  "option:invocation:devils-sight": {
+    "effects": [
+      {
+        "type": "sense",
+        "sense": "darkvision",
+        "range": 120
+      }
+    ]
+  },
+  "option:invocation:beguiling-influence": {
+    "effects": [
+      {
+        "type": "proficiency",
+        "kind": "skill",
+        "ids": [
+          "deception",
+          "persuasion"
+        ]
+      }
+    ]
+  },
+  "option:invocation:eyes-of-the-rune-keeper": {
+    "effects": [
+      {
+        "type": "note",
+        "text": "You can read all writing."
+      }
+    ]
+  },
+  "option:invocation:chains-of-carceri": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:hold-monster",
+        "alwaysPrepared": true,
+        "uses": {
+          "max": 1,
+          "recharge": "long"
+        }
+      },
+      {
+        "type": "note",
+        "text": "Hold Monster at will without a spell slot against celestials, fiends or elementals; once per long rest per creature."
+      }
+    ]
+  },
+  "option:invocation:minions-of-chaos": {
+    "effects": [
+      {
+        "type": "grantSpell",
+        "spellId": "spell:conjure-elemental",
+        "alwaysPrepared": true,
+        "uses": {
+          "max": 1,
+          "recharge": "long"
+        }
+      }
+    ]
+  }
+}

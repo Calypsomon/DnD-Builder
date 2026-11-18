@@ -73,10 +73,10 @@ describe.skipIf(!idx)("reference characters", () => {
     expect(sheet.ac.total).toBe(18);
     expect(sheet.hpMax.total).toBe(12);
     expect(sheet.pb).toBe(2);
-    expect(sheet.spellcasting!.dc.total).toBe(13);
-    expect(sheet.spellcasting!.attack.total).toBe(5);
-    expect(sheet.spellcasting!.preparedMax).toBe(4);
-    expect(sheet.spellcasting!.cantripsMax).toBe(3);
+    expect(sheet.spellcasting!.classes[0].dc.total).toBe(13);
+    expect(sheet.spellcasting!.classes[0].attack.total).toBe(5);
+    expect(sheet.spellcasting!.classes[0].preparedMax).toBe(4);
+    expect(sheet.spellcasting!.classes[0].cantripsMax).toBe(3);
     expect(sheet.spellcasting!.slots[1]).toBe(2);
     expect(sheet.spells.filter((s) => s.origin === "always").map((s) => s.id).sort()).toEqual(["spell:bless", "spell:cure-wounds"]);
     expect(sheet.speed.walk.total).toBe(25);
@@ -181,10 +181,10 @@ describe.skipIf(!idx)("reference characters", () => {
     expect(sheet.ac.total).toBe(13);
     expect(sheet.hpMax.total).toBe(32);
     expect(sheet.pb).toBe(3);
-    const sc = sheet.spellcasting!;
+    const sc = sheet.spellcasting!.classes[0];
     expect(sc.dc.total).toBe(15);
     expect(sc.attack.total).toBe(7);
-    expect(sc.slots.slice(1, 4)).toEqual([4, 3, 2]);
+    expect(sheet.spellcasting!.slots.slice(1, 4)).toEqual([4, 3, 2]);
     expect(sc.cantripsMax).toBe(4);
     expect(sc.preparedMax).toBe(9);
     expect(sc.spellbookMin).toBe(14);

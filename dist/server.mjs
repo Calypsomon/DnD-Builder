@@ -303,8 +303,8 @@ var require_queue = __commonJS({
         worker = context;
         context = null;
       }
-      function asyncWrapper(arg, cb) {
-        worker.call(this, arg).then(function(res) {
+      function asyncWrapper(arg2, cb) {
+        worker.call(this, arg2).then(function(res) {
           cb(null, res);
         }, cb);
       }
@@ -8684,11 +8684,11 @@ var require_transport = __commonJS({
     function hasPreloadFlags() {
       const execArgv = process.execArgv;
       for (let i = 0; i < execArgv.length; i++) {
-        const arg = execArgv[i];
-        if (arg === "--import" || arg === "--require" || arg === "-r") {
+        const arg2 = execArgv[i];
+        if (arg2 === "--import" || arg2 === "--require" || arg2 === "-r") {
           return true;
         }
-        if (arg.startsWith("--import=") || arg.startsWith("--require=") || arg.startsWith("-r=")) {
+        if (arg2.startsWith("--import=") || arg2.startsWith("--require=") || arg2.startsWith("-r=")) {
           return true;
         }
       }
@@ -14462,13 +14462,13 @@ var require_code = __commonJS({
       return new _Code(expr);
     }
     exports.str = str;
-    function addCodeArg(code, arg) {
-      if (arg instanceof _Code)
-        code.push(...arg._items);
-      else if (arg instanceof Name)
-        code.push(arg);
+    function addCodeArg(code, arg2) {
+      if (arg2 instanceof _Code)
+        code.push(...arg2._items);
+      else if (arg2 instanceof Name)
+        code.push(arg2);
       else
-        code.push(interpolate(arg));
+        code.push(interpolate(arg2));
     }
     exports.addCodeArg = addCodeArg;
     function optimize(expr) {
@@ -44146,17 +44146,17 @@ var require_http_errors = __commonJS({
       var status = 500;
       var props = {};
       for (var i = 0; i < arguments.length; i++) {
-        var arg = arguments[i];
-        var type = typeof arg;
-        if (type === "object" && arg instanceof Error) {
-          err = arg;
+        var arg2 = arguments[i];
+        var type = typeof arg2;
+        if (type === "object" && arg2 instanceof Error) {
+          err = arg2;
           status = err.status || err.statusCode || status;
         } else if (type === "number" && i === 0) {
-          status = arg;
+          status = arg2;
         } else if (type === "string") {
-          msg = arg;
+          msg = arg2;
         } else if (type === "object") {
-          props = arg;
+          props = arg2;
         } else {
           throw new TypeError("argument #" + (i + 1) + " unsupported type " + type);
         }
@@ -48802,13 +48802,13 @@ var Doc = class {
       this.indent -= 1;
     }
   }
-  write(arg) {
-    if (typeof arg === "function") {
-      arg(this, { execution: "sync" });
-      arg(this, { execution: "async" });
+  write(arg2) {
+    if (typeof arg2 === "function") {
+      arg2(this, { execution: "sync" });
+      arg2(this, { execution: "async" });
       return;
     }
-    const content = arg;
+    const content = arg2;
     const lines = content.split("\n").filter((x) => x);
     const minIndent = Math.min(...lines.map((x) => x.length - x.trimStart().length));
     const dedented = lines.map((x) => x.slice(minIndent)).map((x) => " ".repeat(this.indent * 2) + x);
@@ -63538,11 +63538,11 @@ var ZodType = /* @__PURE__ */ $constructor("ZodType", (inst, def) => {
   array() {
     return array(this);
   },
-  or(arg) {
-    return union([this, arg]);
+  or(arg2) {
+    return union([this, arg2]);
   },
-  and(arg) {
-    return intersection(this, arg);
+  and(arg2) {
+    return intersection(this, arg2);
   },
   transform(tx) {
     return pipe(this, transform(tx));
@@ -66407,13 +66407,20 @@ var CharacterBuildSchema = external_exports.object({
   /** Customize Origin: replaces the species' fixed ability increases */
   customAsi: external_exports.partialRecord(AbilitySchema, external_exports.number()),
   backgroundId: external_exports.string().nullable(),
+  /** first class (kept for compatibility; the classes are defined by `levels`) */
   classId: external_exports.string().nullable(),
+  /** subclass of the first class (legacy, see `subclasses`) */
   subclassId: external_exports.string().nullable(),
+  /** chosen subclass per class id */
+  subclasses: external_exports.record(external_exports.string(), external_exports.string()).default({}),
   /** index 0 = character level 1 */
   levels: external_exports.array(LevelEntrySchema),
   /** All choice selections, keyed by choice key (see engine/choices.ts) */
   choices: ChoiceSelectionsSchema,
+  /** legacy single-class spell lists (belong to the first class), see `classSpells` */
   spells: external_exports.object({ known: external_exports.array(external_exports.string()), prepared: external_exports.array(external_exports.string()) }),
+  /** spells known/prepared per class id */
+  classSpells: external_exports.record(external_exports.string(), external_exports.object({ known: external_exports.array(external_exports.string()), prepared: external_exports.array(external_exports.string()) })).default({}),
   details: external_exports.object({
     alignment: external_exports.string().default(""),
     age: external_exports.string().default(""),
@@ -66467,9 +66474,11 @@ function newBuild(name = "New Character") {
     backgroundId: null,
     classId: null,
     subclassId: null,
+    subclasses: {},
     levels: [],
     choices: {},
     spells: { known: [], prepared: [] },
+    classSpells: {},
     details: { alignment: "", age: "", appearance: "", backstory: "", notes: "" }
   };
 }
@@ -66774,7 +66783,9 @@ function usage(db2, id) {
 
 // server/main.ts
 var HOST = "127.0.0.1";
-var db = openDb();
+var arg = (name) => process.argv.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3);
+var PORT = Number(arg("port")) || CONFIG.port;
+var db = arg("db") ? openDb(resolve4(arg("db"))) : openDb();
 var app = (0, import_fastify.default)({ logger: false, bodyLimit: 20 * 1024 * 1024 });
 app.setErrorHandler((err, _req, reply) => {
   if (err instanceof ZodError) {
@@ -66795,9 +66806,9 @@ if (existsSync4(webDir)) {
 } else {
   app.get("/", async () => "UI not built yet. Run: npm run build");
 }
-await app.listen({ host: HOST, port: CONFIG.port });
+await app.listen({ host: HOST, port: PORT });
 if (contentCounts(db).classes.wiki === 0) {
   console.log("No game data found. Importing from dnd5e.wikidot.com in the background (first time only, about 35 minutes)...");
   startImport();
 }
-console.log(`D&D Builder running at http://${HOST}:${CONFIG.port}  (close this window to stop)`);
+console.log(`D&D Builder running at http://${HOST}:${PORT}  (close this window to stop)`);

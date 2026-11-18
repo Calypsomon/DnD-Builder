@@ -10,7 +10,10 @@ import { contentCounts } from "./db/client";
 import { startImport } from "./importRunner";
 
 const HOST = "127.0.0.1"; // never reachable from other machines
-const db = openDb();
+// optional overrides for testing: --port=4811 --db=path/to/other.db
+const arg = (name: string) => process.argv.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3);
+const PORT = Number(arg("port")) || CONFIG.port;
+const db = arg("db") ? openDb(resolve(arg("db")!)) : openDb();
 const app = Fastify({ logger: false, bodyLimit: 20 * 1024 * 1024 });
 
 app.setErrorHandler((err, _req, reply) => {
@@ -36,11 +39,11 @@ if (existsSync(webDir)) {
   app.get("/", async () => "UI not built yet. Run: npm run build");
 }
 
-await app.listen({ host: HOST, port: CONFIG.port });
+await app.listen({ host: HOST, port: PORT });
 
 // First start: no game data yet → download and import it in the background (progress is shown in the UI)
 if (contentCounts(db).classes.wiki === 0) {
   console.log("No game data found. Importing from dnd5e.wikidot.com in the background (first time only, about 35 minutes)...");
   startImport();
 }
-console.log(`D&D Builder running at http://${HOST}:${CONFIG.port}  (close this window to stop)`);
+console.log(`D&D Builder running at http://${HOST}:${PORT}  (close this window to stop)`);

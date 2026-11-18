@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { classOrder, levelMap, setSubclass, subclassOf } from "../../shared/engine/buildHelpers";
 import { visible } from "../../shared/engine/contentIndex";
+import { meetsPrereq, prereqText } from "../../shared/rules/multiclass";
 import type { AsiChoice } from "../../shared/types/character";
 import type { ClassData, ContentRow, FeatureData } from "../../shared/types/content";
 import { ABILITIES, type Ability } from "../../shared/types/effects";
@@ -12,22 +14,36 @@ import { useBuilder } from "./context";
 import { ChoiceList, FeatureItem } from "./shared";
 
 export default function ClassTab() {
-  const { character, update, idx } = useBuilder();
+  const { character, sheet, update, idx } = useBuilder();
   const b = character.build;
-  const cls = b.classId ? (idx.byId.get(b.classId) as ContentRow<ClassData> | undefined) : undefined;
+  const map = levelMap(b);
+  const [next, setNext] = useState<string>("");
 
-  if (!cls) return <ClassPicker />;
+  if (!b.levels.length) return <ClassPicker />;
   const level = b.levels.length;
+  const taken = classOrder(b);
+  const nextClass = next || b.levels[level - 1].classId;
+  const allClasses = (idx.bundle.classes as ContentRow<ClassData>[]).filter((r) => visible(r, b) || taken.includes(r.id));
+  const scores = Object.fromEntries(ABILITIES.map((a) => [a, sheet.abilities[a].score.total])) as Record<Ability, number>;
+  const multiclassBlocked = (cid: string) => !taken.includes(cid) && !(meetsPrereq(cid, scores) && taken.every((t) => meetsPrereq(t, scores)));
 
   return (
     <div className="grid items-start gap-3 xl:grid-cols-2">
       <Card
         className="xl:col-span-2"
         title={
-          <span className="flex items-center gap-2">
-            <span className="font-serif text-lg">{cls.name}</span>
-            <SourceBadge source={cls.source} origin={cls.origin} />
-            <span className="text-sm font-normal text-muted">d{cls.data.hitDie} · Saves {cls.data.saves.map((s) => s.toUpperCase()).join(", ")}</span>
+          <span className="flex flex-wrap items-center gap-2">
+            {sheet.classes.map((c) => (
+              <span key={c.classId} className="flex items-center gap-1">
+                <span className="font-serif text-base">
+                  {c.name} {c.level}
+                </span>
+                {c.subclassName && <span className="text-xs font-normal text-muted">({c.subclassName})</span>}
+              </span>
+            ))}
+            <span className="text-xs font-normal text-muted">
+              · Level {level} · Saves {sheet.proficiencies.saves.map((s) => s.toUpperCase()).join(", ")}
+            </span>
           </span>
         }
         actions={
@@ -36,7 +52,7 @@ export default function ClassTab() {
               size="sm"
               variant="ghost"
               onClick={() => {
-                if (confirmDialog("Change class? All class levels and class choices will be removed."))
+                if (confirmDialog("Remove all class levels? Your class choices are kept in case you pick the same class again."))
                   update((c) => {
                     c.build.classId = null;
                     c.build.subclassId = null;
@@ -44,25 +60,60 @@ export default function ClassTab() {
                   });
               }}
             >
-              Change class
+              Reset classes
             </Button>
             <Button size="sm" disabled={level <= 1} onClick={() => update((c) => void c.build.levels.pop())}>
               Level down
             </Button>
-            <span className="px-2 text-sm font-semibold">Level {level}</span>
-            <Button size="sm" variant="primary" disabled={level >= 20} onClick={() => update((c) => void c.build.levels.push({ classId: cls.id, hp: "avg" }))}>
+            <Select value={nextClass} onChange={(e) => setNext(e.target.value)} className="py-0.5 text-xs">
+              <optgroup label="Your classes">
+                {taken.map((cid) => (
+                  <option key={cid} value={cid}>
+                    {idx.byId.get(cid)?.name ?? cid}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="Multiclass into">
+                {allClasses
+                  .filter((r) => !taken.includes(r.id))
+                  .map((r) => (
+                    <option key={r.id} value={r.id}>
+                      {r.name} ({prereqText(r.id) || "no prerequisite"}){multiclassBlocked(r.id) ? " - requirements not met" : ""}
+                    </option>
+                  ))}
+              </optgroup>
+            </Select>
+            <Button size="sm" variant="primary" disabled={level >= 20} onClick={() => update((c) => void c.build.levels.push({ classId: nextClass, hp: "avg" }))}>
               Level up
             </Button>
           </>
         }
       >
-        <details>
-          <summary className="cursor-pointer text-sm text-muted">Class table, proficiencies and starting equipment</summary>
-          <ClassDetails cls={cls} />
-        </details>
+        {multiclassBlocked(nextClass) && (
+          <p className="mb-1 text-xs text-warn">
+            Multiclassing requires {prereqText(nextClass)} for {idx.byId.get(nextClass)?.name} and the prerequisites of your current classes (
+            {taken.map((x) => `${idx.byId.get(x)?.name}: ${prereqText(x)}`).join(", ")}).
+          </p>
+        )}
+        {!taken.includes(nextClass) && (
+          <p className="mb-1 text-xs text-muted">
+            A new class only gives some of its proficiencies and no saving throws. Its spell slots are combined with your other casting classes.
+          </p>
+        )}
+        <div className="flex flex-col gap-1">
+          {taken.map((cid) => {
+            const cls = idx.byId.get(cid) as ContentRow<ClassData> | undefined;
+            return cls ? (
+              <details key={cid}>
+                <summary className="cursor-pointer text-sm text-muted">{cls.name}: class table, proficiencies and starting equipment</summary>
+                <ClassDetails cls={cls} />
+              </details>
+            ) : null;
+          })}
+        </div>
       </Card>
-      {Array.from({ length: level }, (_, i) => (
-        <LevelCard key={i} level={i + 1} cls={cls} />
+      {map.map((m) => (
+        <LevelCard key={m.charLevel} charLevel={m.charLevel} classId={m.classId} classLevel={m.classLevel} multiclass={taken.length > 1} />
       ))}
     </div>
   );
@@ -80,7 +131,7 @@ function ClassPicker() {
           onClick={() =>
             update((ch) => {
               ch.build.classId = c.id;
-              ch.build.subclassId = null;
+              ch.build.subclassId = ch.build.subclasses?.[c.id] ?? null;
               ch.build.levels = [{ classId: c.id, hp: "max" }];
             })
           }
@@ -153,34 +204,45 @@ function ClassDetails({ cls }: { cls: ContentRow<ClassData> }) {
   );
 }
 
-function LevelCard({ level, cls }: { level: number; cls: ContentRow<ClassData> }) {
+function LevelCard({ charLevel, classId, classLevel, multiclass }: { charLevel: number; classId: string; classLevel: number; multiclass: boolean }) {
   const { character, sheet, update, idx } = useBuilder();
   const b = character.build;
-  const entry = b.levels[level - 1];
-  const sub = b.subclassId ? idx.byId.get(b.subclassId) : undefined;
+  const cls = idx.byId.get(classId) as ContentRow<ClassData> | undefined;
+  const entry = b.levels[charLevel - 1];
+  const subId = subclassOf(b, classId);
+  const sub = subId ? idx.byId.get(subId) : undefined;
   const features = [
-    ...((idx.featuresByOwner.get(cls.id) ?? []) as ContentRow<FeatureData>[]).filter((f) => f.data.level === level),
-    ...(sub ? ((idx.featuresByOwner.get(sub.id) ?? []) as ContentRow<FeatureData>[]).filter((f) => f.data.level === level) : []),
+    ...((idx.featuresByOwner.get(classId) ?? []) as ContentRow<FeatureData>[]).filter((f) => f.data.level === classLevel),
+    ...(sub ? ((idx.featuresByOwner.get(sub.id) ?? []) as ContentRow<FeatureData>[]).filter((f) => f.data.level === classLevel) : []),
   ];
-  const here = sheet.choices.filter((c) => c.location === "class" && c.level === level);
+  const here = sheet.choices.filter((c) => c.location === "class" && c.classId === classId && c.level === classLevel);
   const asi = here.find((c) => c.isAsi);
   const subclassChoice = here.find((c) => c.choice.from.kind === "subclass");
   const others = here.filter((c) => c !== asi && c !== subclassChoice);
   const open = here.some((c) => c.open);
+  const hitDie = cls?.data.hitDie ?? 8;
 
   return (
     <Card
       highlight={open}
       title={
         <span className="flex items-center gap-2">
-          Level {level}
+          Level {charLevel}
+          {multiclass && (
+            <span className="text-xs font-normal text-muted">
+              {cls?.name ?? classId} {classLevel}
+            </span>
+          )}
           {open && <Badge tone="danger">choice needed</Badge>}
         </span>
       }
-      actions={<HpControl level={level} hitDie={cls.data.hitDie} value={entry.hp} onChange={(hp) => update((c) => void (c.build.levels[level - 1].hp = hp))} />}
+      actions={<HpControl level={charLevel} hitDie={hitDie} value={entry.hp} onChange={(hp) => update((c) => void (c.build.levels[charLevel - 1].hp = hp))} />}
     >
       <div className="flex flex-col gap-2">
-        {subclassChoice && <SubclassPicker instance={subclassChoice} />}
+        {multiclass && classLevel === 1 && charLevel > 1 && (
+          <p className="text-xs text-muted">Multiclass into {cls?.name}: only some of its proficiencies, no saving throws, no starting equipment.</p>
+        )}
+        {subclassChoice && <SubclassPicker instance={subclassChoice} classId={classId} />}
         {asi && <AsiPicker instance={asi} />}
         <ChoiceList items={others} />
         {features.length > 0 && (
@@ -191,7 +253,7 @@ function LevelCard({ level, cls }: { level: number; cls: ContentRow<ClassData> }
                 row={f}
                 extra={
                   f.data.optional && !b.options.optionalFeatures ? (
-                    <span className="text-[11px] text-muted">Optional class feature (Tasha's) — not active. Enable it in Overview → Options.</span>
+                    <span className="text-[11px] text-muted">Optional class feature (Tasha's) - not active. Enable it in Overview, Options.</span>
                   ) : f.data.ownerType === "subclass" ? (
                     <span className="text-[11px] text-muted">{sub?.name}</span>
                   ) : undefined
@@ -229,11 +291,12 @@ function HpControl({ level, hitDie, value, onChange }: { level: number; hitDie: 
   );
 }
 
-function SubclassPicker({ instance }: { instance: ChoiceInstance }) {
+function SubclassPicker({ instance, classId }: { instance: ChoiceInstance; classId: string }) {
   const { character, update, idx } = useBuilder();
   const [open, setOpen] = useState(false);
-  const rows = (idx.subclassesByClass.get(character.build.classId!) ?? []).filter((r) => visible(r, character.build));
-  const current = character.build.subclassId ? idx.byId.get(character.build.subclassId) : undefined;
+  const rows = (idx.subclassesByClass.get(classId) ?? []).filter((r) => visible(r, character.build));
+  const currentId = subclassOf(character.build, classId);
+  const current = currentId ? idx.byId.get(currentId) : undefined;
   return (
     <div className={cx("rounded-md border p-2", instance.open ? "border-danger/60" : "border-line")}>
       <div className="flex flex-wrap items-center gap-2">
@@ -264,7 +327,7 @@ function SubclassPicker({ instance }: { instance: ChoiceInstance }) {
         selected={current ? [current.id] : []}
         options={rows.map((r) => ({ id: r.id, name: r.name, description: r.description, source: r.origin === "custom" ? "Custom" : r.source }))}
         onToggle={(id) => {
-          update((c) => void (c.build.subclassId = c.build.subclassId === id ? null : id));
+          update((c) => setSubclass(c.build, classId, subclassOf(c.build, classId) === id ? null : id));
           setOpen(false);
         }}
       />

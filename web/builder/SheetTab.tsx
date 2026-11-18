@@ -68,7 +68,7 @@ export default function SheetTab() {
         <div className="flex flex-1 flex-col rounded-lg border border-line bg-panel px-3 py-2">
           <div className="flex items-baseline justify-between">
             <span className="text-[10px] font-semibold uppercase tracking-wider text-muted">Hit Points</span>
-            <span className="text-xs text-muted">Hit dice: {sheet.classLevel}d{sheet.hitDie}</span>
+            <span className="text-xs text-muted">Hit dice: {sheet.hitDice || "–"}</span>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <span className={cx("text-2xl font-semibold tabular-nums", hpCur <= hpMax / 4 && "text-danger")}>
@@ -242,11 +242,12 @@ export default function SheetTab() {
                   ),
                 )}
               </div>
-              {sheet.spellcasting && (
-                <p className="mt-2 text-sm">
-                  Spell save DC <b><StatValue stat={sheet.spellcasting.dc} /></b> · Spell attack <b><StatValue stat={sheet.spellcasting.attack} signed /></b>
+              {sheet.spellcasting?.classes.map((sc) => (
+                <p key={sc.classId} className="mt-1 text-sm">
+                  {sheet.spellcasting!.classes.length > 1 && <span className="text-muted">{sc.className}: </span>}
+                  Spell save DC <b><StatValue stat={sc.dc} /></b> · Spell attack <b><StatValue stat={sc.attack} signed /></b>
                 </p>
-              )}
+              ))}
             </Card>
           )}
 

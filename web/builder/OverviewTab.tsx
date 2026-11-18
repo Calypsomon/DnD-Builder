@@ -19,7 +19,7 @@ export default function OverviewTab({ goTo }: { goTo: (tab: string) => void }) {
   if (!b.classId) todo.push({ text: "Choose a class", tab: "class" });
   for (const c of sheet.openChoices) {
     todo.push({
-      text: `${c.choice.label} — ${c.ownerName}${c.location === "class" ? ` (level ${c.level})` : ""}`,
+      text: `${c.choice.label} — ${c.ownerName}${c.location === "class" ? ` (level ${c.charLevel})` : ""}`,
       tab: c.location === "class" ? "class" : "origin",
     });
   }

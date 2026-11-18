@@ -30,16 +30,16 @@ export function ChoiceList({ items }: { items: ChoiceInstance[] }) {
   const { character, sheet, update } = useBuilder();
   if (!items.length) return null;
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-1.5">
       {items.map((ci) => (
-        <div key={ci.key} className={cx("rounded-md border p-2", ci.open ? "border-danger/60" : "border-line")}>
+        <div key={ci.key} className={cx("rounded-md border px-2 py-1.5", ci.open ? "border-danger/60" : "border-line")}>
           <ChoicePicker
             instance={ci}
             build={character.build}
-            maxSpellLevel={sheet.spellcasting?.maxSpellLevel}
+            maxSpellLevel={sheet.spellcasting?.maxSlotLevel}
             onChange={(ids) => update((c) => void (c.build.choices[ci.key] = ids))}
           />
-          {ci.ownerName && <p className="mt-1 text-[11px] text-muted">from {ci.ownerName}</p>}
+          {ci.ownerName && <p className="mt-0.5 text-[10px] text-muted">from {ci.ownerName}</p>}
         </div>
       ))}
     </div>

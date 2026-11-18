@@ -35,17 +35,20 @@ export interface SheetSpell {
   ritual: boolean;
   concentration: boolean;
   sourceLabel?: string;
+  /** class whose spell list it was chosen from (class spells) */
+  classId?: string;
 }
 
+/** Spellcasting of one class */
 export interface SheetSpellcasting {
   classId: string;
+  className: string;
+  classLevel: number;
   ability: Ability;
   mode: "known" | "prepared" | "spellbook";
   dc: Stat;
   attack: Stat;
-  /** slots[1..9] */
-  slots: number[];
-  pact?: { slots: number; level: number };
+  /** highest spell level this class can learn/prepare (as if single-classed) */
   maxSpellLevel: number;
   cantripsMax: number;
   knownMax?: number;
@@ -57,6 +60,27 @@ export interface SheetSpellcasting {
   extraSpellIds: string[];
   ritual: boolean;
   counts: { cantrips: number; known: number; prepared: number };
+}
+
+/** All spellcasting of the character: shared slots + per-class details */
+export interface SheetCasting {
+  /** slots[1..9] (shared multiclass table when several classes cast) */
+  slots: number[];
+  pact?: { slots: number; level: number };
+  /** highest slot level available */
+  maxSlotLevel: number;
+  /** caster level used for the multiclass slot table (only when 2+ casting classes) */
+  multiclassCasterLevel?: number;
+  classes: SheetSpellcasting[];
+}
+
+export interface SheetClassInfo {
+  classId: string;
+  name: string;
+  level: number;
+  hitDie: number;
+  subclassId: string | null;
+  subclassName: string | null;
 }
 
 export interface SheetResource {
@@ -88,7 +112,12 @@ export interface ChoiceInstance {
   location: "origin" | "background" | "class" | "feat" | "item" | "custom";
   ownerId: string;
   ownerName: string;
+  /** class level for class choices, else 1 */
   level: number;
+  /** class the choice belongs to (class choices) */
+  classId?: string;
+  /** character level at which the choice appears */
+  charLevel: number;
   count: number;
   selected: string[];
   asi?: AsiChoice;
@@ -98,9 +127,15 @@ export interface ChoiceInstance {
 }
 
 export interface Sheet {
+  /** character level (at least 1) */
   level: number;
+  /** number of class levels taken (0 = no class yet) */
   classLevel: number;
+  classes: SheetClassInfo[];
+  /** e.g. "5d10 + 2d6" */
+  hitDice: string;
   pb: number;
+  /** hit die of the first class */
   hitDie: number;
   abilities: Record<Ability, { score: Stat; mod: number }>;
   saves: Record<Ability, { total: Stat; proficient: boolean }>;
@@ -114,7 +149,7 @@ export interface Sheet {
   defenses: { resistance: string[]; immunity: string[]; vulnerability: string[] };
   proficiencies: { armor: string[]; weapons: string[]; tools: string[]; languages: string[]; saves: Ability[] };
   attacks: SheetAttack[];
-  spellcasting: SheetSpellcasting | null;
+  spellcasting: SheetCasting | null;
   spells: SheetSpell[];
   resources: SheetResource[];
   features: SheetFeature[];

@@ -45,13 +45,20 @@ export const CharacterBuildSchema = z.object({
   /** Customize Origin: replaces the species' fixed ability increases */
   customAsi: z.partialRecord(AbilitySchema, z.number()),
   backgroundId: z.string().nullable(),
+  /** first class (kept for compatibility; the classes are defined by `levels`) */
   classId: z.string().nullable(),
+  /** subclass of the first class (legacy, see `subclasses`) */
   subclassId: z.string().nullable(),
+  /** chosen subclass per class id */
+  subclasses: z.record(z.string(), z.string()).default({}),
   /** index 0 = character level 1 */
   levels: z.array(LevelEntrySchema),
   /** All choice selections, keyed by choice key (see engine/choices.ts) */
   choices: ChoiceSelectionsSchema,
+  /** legacy single-class spell lists (belong to the first class), see `classSpells` */
   spells: z.object({ known: z.array(z.string()), prepared: z.array(z.string()) }),
+  /** spells known/prepared per class id */
+  classSpells: z.record(z.string(), z.object({ known: z.array(z.string()), prepared: z.array(z.string()) })).default({}),
   details: z.object({
     alignment: z.string().default(""),
     age: z.string().default(""),
@@ -114,9 +121,11 @@ export function newBuild(name = "New Character"): CharacterBuild {
     backgroundId: null,
     classId: null,
     subclassId: null,
+    subclasses: {},
     levels: [],
     choices: {},
     spells: { known: [], prepared: [] },
+    classSpells: {},
     details: { alignment: "", age: "", appearance: "", backstory: "", notes: "" },
   };
 }

@@ -1,17 +1,11 @@
-import { Card, Checkbox, Field, Input, TextArea } from "../components/ui";
+import { Link } from "react-router-dom";
+import { Card, Field, Input, TextArea } from "../components/ui";
 import { useBuilder } from "./context";
 
 export default function OverviewTab({ goTo }: { goTo: (tab: string) => void }) {
   const { character, sheet, update } = useBuilder();
   const b = character.build;
   const setDetail = (k: keyof typeof b.details, v: string) => update((c) => void (c.build.details[k] = v));
-  const toggleSource = (s: "official" | "ua" | "homebrew", on: boolean) =>
-    update((c) => {
-      const set = new Set(c.build.options.sources);
-      if (on) set.add(s);
-      else set.delete(s);
-      c.build.options.sources = [...set];
-    });
 
   const todo: { text: string; tab: string }[] = [];
   if (!b.speciesId) todo.push({ text: "Choose a species", tab: "origin" });
@@ -75,28 +69,13 @@ export default function OverviewTab({ goTo }: { goTo: (tab: string) => void }) {
             </ul>
           </Card>
         )}
-        <Card title="Options">
-          <div className="grid gap-2">
-            <span className="text-xs font-medium text-muted">Allowed sources</span>
-            <div className="flex flex-wrap gap-4">
-              <Checkbox label="Official books" checked={b.options.sources.includes("official")} onChange={(v) => toggleSource("official", v)} />
-              <Checkbox label="Unearthed Arcana" checked={b.options.sources.includes("ua")} onChange={(v) => toggleSource("ua", v)} />
-              <Checkbox label="Wiki homebrew" checked={b.options.sources.includes("homebrew")} onChange={(v) => toggleSource("homebrew", v)} />
-            </div>
-            <p className="text-xs text-muted">Your own custom content is always available.</p>
-            <Checkbox label="Feats allowed (instead of ability score improvements)" checked={b.options.featsAllowed} onChange={(v) => update((c) => void (c.build.options.featsAllowed = v))} />
-            <Checkbox
-              label="Optional class features (Tasha's, e.g. Primal Knowledge, Martial Versatility)"
-              checked={!!b.options.optionalFeatures}
-              onChange={(v) => update((c) => void (c.build.options.optionalFeatures = v))}
-            />
-            <Checkbox
-              label="Customize origin (choose your own species ability increases, Tasha's)"
-              checked={b.options.customizeOrigin}
-              onChange={(v) => update((c) => void (c.build.options.customizeOrigin = v))}
-            />
-          </div>
-        </Card>
+        <p className="text-xs text-muted">
+          Sources, feats, optional class features and custom origins are table rules for all characters. Change them in{" "}
+          <Link to="/settings" className="text-accent hover:underline">
+            Settings
+          </Link>
+          .
+        </p>
       </div>
     </div>
   );

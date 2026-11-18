@@ -1,6 +1,9 @@
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { computeSheet } from "../../shared/engine/computeSheet";
+import { rulesFromSettings, withRules } from "../../shared/rules/options";
+import { api } from "../api/client";
 import { useContent } from "../api/content";
 import AbilitiesTab from "../builder/AbilitiesTab";
 import ClassTab from "../builder/ClassTab";
@@ -30,11 +33,15 @@ export default function CharacterPage() {
   const { id, "*": rest } = useParams();
   const navigate = useNavigate();
   const idx = useContent();
-  const { character, loading, error, status, load, update, setSummary } = useCharacterStore();
+  const { character: stored, loading, error, status, load, update, setSummary } = useCharacterStore();
+  const meta = useQuery({ queryKey: ["meta"], queryFn: api.meta });
+  const rules = useMemo(() => (meta.data || meta.isError ? rulesFromSettings(meta.data?.settings) : null), [meta.data, meta.isError]);
+  // the table rules from Settings apply to every character
+  const character = useMemo(() => (stored && rules ? withRules(stored, rules) : null), [stored, rules]);
   const tab: Tab = (TABS as readonly string[]).includes(rest ?? "") ? (rest as Tab) : "overview";
 
   useEffect(() => {
-    if (id && character?.id !== id) void load(id);
+    if (id && stored?.id !== id) void load(id);
   }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const sheet = useMemo(() => (character ? computeSheet(character, idx) : null), [character, idx]);
@@ -42,7 +49,7 @@ export default function CharacterPage() {
     if (sheet) setSummary(sheet.summary);
   }, [sheet, setSummary]);
 
-  if (error && !character) return <div className="text-danger">Error: {error}</div>;
+  if (error && !stored) return <div className="text-danger">Error: {error}</div>;
   if (loading || !character || !sheet || character.id !== id) return <div className="text-muted">Loading character…</div>;
 
   const openByTab: Partial<Record<Tab, number>> = {};

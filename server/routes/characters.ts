@@ -91,15 +91,6 @@ export function characterRoutes(app: FastifyInstance, db: DB) {
     const body = z.object({ name: z.string().optional() }).parse(req.body ?? {});
     const id = randomUUID();
     const build = newBuild(body.name || "New Character");
-    // defaults from the Settings page
-    const setting = (key: string) => {
-      const r = db.prepare("SELECT value FROM settings WHERE key = ?").get(key) as { value: string } | undefined;
-      return r ? JSON.parse(r.value) : undefined;
-    };
-    const sources = setting("defaultSources");
-    if (Array.isArray(sources) && sources.length) build.options.sources = sources;
-    if (typeof setting("featsAllowed") === "boolean") build.options.featsAllowed = setting("featsAllowed");
-    if (typeof setting("customizeOrigin") === "boolean") build.options.customizeOrigin = setting("customizeOrigin");
     saveCharacter(db, id, { build, state: newState(), inventory: [], custom: [] }, true);
     return loadCharacter(db, id);
   });

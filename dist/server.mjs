@@ -66568,14 +66568,6 @@ function characterRoutes(app2, db2) {
     const body = external_exports.object({ name: external_exports.string().optional() }).parse(req.body ?? {});
     const id = randomUUID();
     const build = newBuild(body.name || "New Character");
-    const setting = (key) => {
-      const r = db2.prepare("SELECT value FROM settings WHERE key = ?").get(key);
-      return r ? JSON.parse(r.value) : void 0;
-    };
-    const sources = setting("defaultSources");
-    if (Array.isArray(sources) && sources.length) build.options.sources = sources;
-    if (typeof setting("featsAllowed") === "boolean") build.options.featsAllowed = setting("featsAllowed");
-    if (typeof setting("customizeOrigin") === "boolean") build.options.customizeOrigin = setting("customizeOrigin");
     saveCharacter(db2, id, { build, state: newState(), inventory: [], custom: [] }, true);
     return loadCharacter(db2, id);
   });

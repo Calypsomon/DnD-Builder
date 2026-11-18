@@ -46,3 +46,5 @@ npm run build        # builds dist/ (UI + bundled server/importer) — commit di
 - `web/` – React UI
 - `dist/` – prebuilt app used by `start.bat`
 - `docs/BAUPLAN_PROTOTYP.md` – design document (German)
+
+Nils leck eier 

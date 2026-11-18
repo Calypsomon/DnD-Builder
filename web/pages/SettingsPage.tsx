@@ -1,6 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { api } from "../api/client";
+import { type RuleOptions, rulesFromSettings } from "../../shared/rules/options";
+import { api, type Meta } from "../api/client";
 import { Button, Card, Checkbox } from "../components/ui";
 
 /** Re-import game data from the wiki; shows progress while running */
@@ -39,10 +40,10 @@ function ImportControls({ onDone }: { onDone: () => void }) {
   );
 }
 
-const SOURCE_KINDS = [
-  { id: "official", label: "Official" },
+const SOURCE_KINDS: { id: RuleOptions["sources"][number]; label: string }[] = [
+  { id: "official", label: "Official books" },
   { id: "ua", label: "Unearthed Arcana" },
-  { id: "homebrew", label: "Homebrew" },
+  { id: "homebrew", label: "Wiki homebrew" },
 ];
 
 function fmt(iso: string | null | undefined) {
@@ -54,31 +55,27 @@ function fmt(iso: string | null | undefined) {
 export default function SettingsPage() {
   const qc = useQueryClient();
   const q = useQuery({ queryKey: ["meta"], queryFn: api.meta });
-  const [sources, setSources] = useState<string[]>(["official"]);
-  const [featsAllowed, setFeatsAllowed] = useState(false);
-  const [customizeOrigin, setCustomizeOrigin] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const rules = rulesFromSettings(q.data?.settings);
 
-  useEffect(() => {
-    const s = q.data?.settings;
-    if (!s) return;
-    if (Array.isArray(s.defaultSources)) setSources(s.defaultSources as string[]);
-    if (typeof s.featsAllowed === "boolean") setFeatsAllowed(s.featsAllowed);
-    if (typeof s.customizeOrigin === "boolean") setCustomizeOrigin(s.customizeOrigin);
-  }, [q.data]);
-
-  async function save() {
+  // saved on every change; open characters pick the new rules up right away
+  async function setRules(patch: Partial<RuleOptions>) {
     setError(null);
+    const next = { ...rules, ...patch };
+    qc.setQueryData(["meta"], (m: Meta | undefined) => (m ? { ...m, settings: { ...m.settings, rules: next } } : m));
     try {
-      await api.saveSettings({ ...(q.data?.settings ?? {}), defaultSources: sources, featsAllowed, customizeOrigin });
-      qc.invalidateQueries({ queryKey: ["meta"] });
+      await api.saveSettings({ ...(q.data?.settings ?? {}), rules: next });
       setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
+      setTimeout(() => setSaved(false), 1500);
     } catch (e) {
       setError((e as Error).message);
+    } finally {
+      void qc.invalidateQueries({ queryKey: ["meta"] });
     }
   }
+  const toggleSource = (id: RuleOptions["sources"][number], on: boolean) =>
+    void setRules({ sources: on ? [...rules.sources.filter((x) => x !== id), id] : rules.sources.filter((x) => x !== id) });
 
   const meta = q.data;
   const counts = Object.entries(meta?.counts ?? {});
@@ -88,32 +85,36 @@ export default function SettingsPage() {
       <h1 className="text-xl font-semibold">Settings</h1>
       {q.isError && <div className="text-sm text-danger">Could not load settings: {(q.error as Error).message}</div>}
 
-      <Card title="Defaults for new characters">
-        <div className="space-y-3">
+      <Card
+        title="Table rules"
+        actions={
+          <span className="text-xs">
+            {saved && <span className="text-ok">Saved</span>}
+            {error && <span className="text-danger">{error}</span>}
+          </span>
+        }
+      >
+        <div className="space-y-2 text-sm">
+          <p className="text-xs text-muted">These rules apply to all characters. Your own custom content is always available.</p>
           <div>
-            <div className="mb-1 text-xs font-medium text-muted">Default sources</div>
+            <div className="mb-1 text-xs font-medium text-muted">Allowed sources</div>
             <div className="flex flex-wrap gap-4">
               {SOURCE_KINDS.map((s) => (
-                <Checkbox
-                  key={s.id}
-                  label={s.label}
-                  checked={sources.includes(s.id)}
-                  onChange={(v) => setSources((cur) => (v ? [...cur.filter((x) => x !== s.id), s.id] : cur.filter((x) => x !== s.id)))}
-                />
+                <Checkbox key={s.id} label={s.label} checked={rules.sources.includes(s.id)} onChange={(v) => toggleSource(s.id, v)} />
               ))}
             </div>
           </div>
-          <div className="flex flex-wrap gap-4">
-            <Checkbox label="Feats allowed by default" checked={featsAllowed} onChange={setFeatsAllowed} />
-            <Checkbox label="Customize origin by default" checked={customizeOrigin} onChange={setCustomizeOrigin} />
-          </div>
-          <div className="flex items-center gap-3">
-            <Button variant="primary" onClick={save}>
-              Save settings
-            </Button>
-            {saved && <span className="text-sm text-ok">Saved</span>}
-            {error && <span className="text-sm text-danger">{error}</span>}
-          </div>
+          <Checkbox label="Feats (choose a feat instead of an ability score improvement)" checked={rules.featsAllowed} onChange={(v) => void setRules({ featsAllowed: v })} />
+          <Checkbox
+            label="Optional class features (Tasha's, e.g. Primal Knowledge, Martial Versatility)"
+            checked={rules.optionalFeatures}
+            onChange={(v) => void setRules({ optionalFeatures: v })}
+          />
+          <Checkbox
+            label="Customize origin (choose your own species ability increases, Tasha's)"
+            checked={rules.customizeOrigin}
+            onChange={(v) => void setRules({ customizeOrigin: v })}
+          />
         </div>
       </Card>
 

@@ -253,7 +253,7 @@ function LevelCard({ charLevel, classId, classLevel, multiclass }: { charLevel: 
                 row={f}
                 extra={
                   f.data.optional && !b.options.optionalFeatures ? (
-                    <span className="text-[11px] text-muted">Optional class feature (Tasha's) - not active. Enable it in Overview, Options.</span>
+                    <span className="text-[11px] text-muted">Optional class feature (Tasha's) - not active. Enable it in Settings, Table rules.</span>
                   ) : f.data.ownerType === "subclass" ? (
                     <span className="text-[11px] text-muted">{sub?.name}</span>
                   ) : undefined
